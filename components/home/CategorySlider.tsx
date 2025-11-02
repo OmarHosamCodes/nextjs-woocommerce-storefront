@@ -7,6 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Image from "next/image";
 import { WooProductCategory } from "@/types/woo";
+import Link from "next/link";
 
 interface CategorySliderProps {
   categories: WooProductCategory[];
@@ -58,7 +59,7 @@ const CategorySlider: React.FC<CategorySliderProps> = ({ categories }) => {
           .filter((cat) => cat.id !== 15) // optional exclusion
           .map((cat) => (
             <SwiperSlide key={cat.id}>
-              <div className="rounded-lg p-4 flex flex-col items-center justify-center transition">
+              <Link href={`/shop?category=${cat.id}`} className="rounded-lg p-4 flex flex-col items-center justify-center transition">
                 {cat.image?.src ? (
                   <div className="w-[120px] h-[120px] bg-gray-100 rounded-full flex items-center justify-center">
                     <Image
@@ -77,7 +78,7 @@ const CategorySlider: React.FC<CategorySliderProps> = ({ categories }) => {
                 <p className="mt-3 text-gray-700 font-medium text-center text-sm">
                   {cat.name}
                 </p>
-              </div>
+              </Link>
             </SwiperSlide>
           ))}
       </Swiper>

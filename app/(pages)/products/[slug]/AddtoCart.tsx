@@ -21,9 +21,9 @@ const AddToCart = ({product}:{product:any}) => {
   return (
     <button
       onClick={handleAdd}
-      className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+      className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer"
     >
-    Add to Cart
+    <i className="ri-shopping-cart-line mr-2"></i> Add to Cart
     </button>
   );
 };

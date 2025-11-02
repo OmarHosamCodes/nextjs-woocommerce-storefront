@@ -1,7 +1,6 @@
 import CategorySlider from "@/components/home/CategorySlider";
 import Hero from "@/components/home/Hero";
 import ProductsGallery from "@/components/home/ProductsGallery";
-import Image from "next/image";
 
 import { WooProduct,WooProductCategory } from "@/types/woo";
 export const revalidate = 60;

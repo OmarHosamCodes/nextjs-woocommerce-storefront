@@ -2,25 +2,36 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import AddToCart from "@/app/(pages)/products/[slug]/AddtoCart";
 import { WooProduct } from "@/types/woo";
 import { siteConfig } from "@/lib/config";
 
-const ProductCard: React.FC<{ product: WooProduct }> = ({ product }) => {
+const VariableProductCard: React.FC<{ product: WooProduct }> = ({ product }) => {
   const {
     name,
     slug,
-    price,
-    regular_price,
-    sale_price,
+    images,
+    categories,
     on_sale,
+    type,
+    price,
+    variations = [],
     average_rating,
     rating_count,
-    categories,
-    images,
   } = product;
 
+  const isVariable = type === "variable";
   const imageUrl = images?.[0]?.src || "/no-image.png";
+
+  // 🧮 Calculate price range for variable products
+  const prices =
+    Array.isArray(variations) && typeof variations[0] === "object"
+      ? variations.map((v: any) => parseFloat(v.display_price || v.price || 0))
+      : [];
+
+  const minPrice = prices.length ? Math.min(...prices) : parseFloat(price || "0");
+  const maxPrice = prices.length ? Math.max(...prices) : minPrice;
+
+  // ⭐ Convert rating to number
   const rating = parseFloat(average_rating || "0");
 
   return (
@@ -49,9 +60,7 @@ const ProductCard: React.FC<{ product: WooProduct }> = ({ product }) => {
         {/* Category */}
         <div className="text-xs text-gray-400">
           {categories?.map((cat) => (
-            <span key={cat.id} className="mr-2">
-              {cat.name}
-            </span>
+            <span key={cat.id} className="mr-2">{cat.name}</span>
           ))}
         </div>
 
@@ -82,29 +91,24 @@ const ProductCard: React.FC<{ product: WooProduct }> = ({ product }) => {
 
         {/* 💰 Price */}
         <div className="flex items-center gap-2 mt-2">
-          {on_sale ? (
-            <>
-              <span className="text-md font-bold text-gray-900">
-                {siteConfig.currency} {sale_price}
-              </span>
-              <span className="text-md line-through text-gray-400">
-                {siteConfig.currency} {regular_price}
-              </span>
-            </>
-          ) : (
             <span className="text-md text-gray-900 font-medium">
-              {siteConfig.currency} {regular_price || price || "—"}
+              From {siteConfig.currency} {minPrice}
+              {maxPrice !== minPrice && ` - ${siteConfig.currency} ${maxPrice}`}
             </span>
-          )}
         </div>
 
-        {/* 🛒 Add to Cart */}
+        {/* 🛒 Button */}
         <div className="flex gap-2 pt-3">
-          <AddToCart product={product} />
+          <Link
+            href={`/products/${slug}`}
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-center"
+          >
+            <i className="ri-eye-line mr-2"></i> View Product
+          </Link>
         </div>
       </div>
     </div>
   );
 };
 
-export default ProductCard;
+export default VariableProductCard;
