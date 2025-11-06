@@ -58,6 +58,7 @@ export interface WooProduct {
   purchase_note: string;
   categories: WooCategory[];
   tags: WooTag[];
+  brands: WooBrands[];
   images: WooImage[];
   attributes: WooAttribute[];
   default_attributes: WooDefaultAttribute[];
@@ -88,6 +89,11 @@ export interface WooCategory {
 }
 
 export interface WooTag {
+  id: number;
+  name: string;
+  slug: string;
+}
+export interface WooBrands {
   id: number;
   name: string;
   slug: string;

@@ -4,6 +4,8 @@ import AddToCart from "./AddtoCart";
 import SimpleProductView from "./VariableProductView";
 import VariableProductView from "./VariableProductView";
 import { WooProduct } from "@/types/woo";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import ProductDescription from "./ProductDescription";
 
 // ✅ Component
 const ProductPage = async ({
@@ -25,12 +27,28 @@ const ProductPage = async ({
   const product: WooProduct = await res.json();
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      {product.type === "simple" && <SimpleProductView product={product} />}
+    <>
+      <Breadcrumb
+        links={[
+          { title: 'Home', href: '/' },
+          { title: 'Shop', href: '/shop' },
+          { title: product.name, href: '#' }
+        ]} />
 
-      {product.type === "variable" && <VariableProductView product={product} />}
-      
-    </div>
+      <div className="container mx-auto px-4 py-10 bg-white">
+        {product.type === "simple" && <SimpleProductView product={product} />}
+
+        {product.type === "variable" && <VariableProductView product={product} />}
+
+      </div>
+      <div className="w-full bg-gray-100">
+        <div className="container mx-auto px-4">
+          <ProductDescription product={product} />
+        </div>
+      </div>
+
+    </>
+
   );
 };
 

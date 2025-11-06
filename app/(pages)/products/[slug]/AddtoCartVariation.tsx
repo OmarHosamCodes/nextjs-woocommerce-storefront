@@ -6,6 +6,7 @@ import { useCartStore}  from "@/store/cartStore";
 const AddToCartVariation = ({product,variation}:{product:any,variation:any}) => {
   const {addToCart} = useCartStore();
 
+  console.log(variation);
   const handleAdd = () => {
     addToCart({
       id: variation.id,
