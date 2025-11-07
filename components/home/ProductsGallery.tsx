@@ -1,6 +1,8 @@
 import React from "react";
 import ProductCard from "@/components/ProductCard";
 import { WooProduct } from "@/types/woo";
+import { Variable } from "lucide-react";
+import VariableProductCard from "../VariableProductCard";
 
 
 const ProductsGallery = ({ products,name }: { products: WooProduct[],name: string }) => {
@@ -11,7 +13,8 @@ const ProductsGallery = ({ products,name }: { products: WooProduct[],name: strin
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product:any) => (
-            <ProductCard key={product.id} product={product} />
+            product.type === "simple" ? <ProductCard key={product.id} product={product} /> : <VariableProductCard key={product.id} product={product} /> 
+            
           ))}
         </div>
       </div>

@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     const maxPrice = searchParams.get("maxPrice");
     const order = searchParams.get("order") || "desc"; // asc | desc
     const orderby = searchParams.get("orderby") || "date"; // date | price | title | popularity | rating
-    const per_page = searchParams.get("per_page") || "2"; // Products per page
+    const per_page = searchParams.get("per_page") || "8"; // Products per page
     const page = searchParams.get("page") || "1";
     const search = searchParams.get("search");
 
