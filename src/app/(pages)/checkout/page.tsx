@@ -9,10 +9,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { env } from "@/env";
 import { siteConfig } from "@/lib/config";
+import { useAuthStore } from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface CheckoutFormData {
@@ -30,13 +31,26 @@ const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
 const CheckoutPage = () => {
 	const router = useRouter();
-	const { register, handleSubmit, reset } = useForm<CheckoutFormData>({
-		defaultValues: { paymentMethod: "cod" },
-	});
+	const { register, handleSubmit, reset, setValue } = useForm<CheckoutFormData>(
+		{
+			defaultValues: { paymentMethod: "cod" },
+		},
+	);
 	const [loading, setLoading] = useState(false);
 	const [_success, setSuccess] = useState(false);
 
 	const { items, clearCart } = useCartStore();
+	const { user, isAuthenticated } = useAuthStore();
+
+	// Pre-fill form with user data if authenticated
+	useEffect(() => {
+		if (isAuthenticated && user) {
+			const [firstName, ...lastNameParts] = user.displayName.split(" ");
+			setValue("firstName", firstName || "");
+			setValue("lastName", lastNameParts.join(" ") || "");
+			setValue("email", user.email || "");
+		}
+	}, [isAuthenticated, user, setValue]);
 	const orderItems = items;
 
 	const subtotal = orderItems.reduce(
@@ -51,6 +65,7 @@ const CheckoutPage = () => {
 		try {
 			const orderData = {
 				...data,
+				customer_id: isAuthenticated && user ? user.id : undefined,
 				items: orderItems.map((item) => {
 					const isVariation = item.type === "variable";
 					return {

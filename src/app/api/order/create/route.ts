@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server";
 import { wcApi } from "@/lib/woocommerce";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
 	try {
@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
 			items,
 			total,
 			shipping,
+			customer_id,
 		} = body;
 
 		// Map cart items to WooCommerce order line_items
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
 			quantity: item.quantity,
 		}));
 
-		const orderData = {
+		const orderData: any = {
 			payment_method: paymentMethod,
 			payment_method_title:
 				paymentMethod === "cod" ? "Cash on Delivery" : paymentMethod,
@@ -60,6 +61,11 @@ export async function POST(req: NextRequest) {
 				},
 			],
 		};
+
+		// Link order to customer if authenticated
+		if (customer_id) {
+			orderData.customer_id = customer_id;
+		}
 
 		const { data } = await wcApi.post("orders", orderData);
 

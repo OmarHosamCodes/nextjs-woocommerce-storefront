@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthStore } from "@/store/authStore";
 import { Star, User } from "lucide-react";
 import React from "react";
 import toast from "react-hot-toast";
@@ -15,6 +16,8 @@ const Reviews = ({
 	setReviews: React.Dispatch<React.SetStateAction<any[]>>;
 	reviewsLoaded: boolean;
 }) => {
+	const { user, isAuthenticated } = useAuthStore();
+
 	const [form, setForm] = React.useState({
 		reviewer: "",
 		reviewer_email: "",
@@ -23,6 +26,17 @@ const Reviews = ({
 	});
 
 	const [submitting, setSubmitting] = React.useState(false);
+
+	// Pre-fill form with user data if authenticated
+	React.useEffect(() => {
+		if (isAuthenticated && user) {
+			setForm((prev) => ({
+				...prev,
+				reviewer: user.displayName || "",
+				reviewer_email: user.email || "",
+			}));
+		}
+	}, [isAuthenticated, user]);
 
 	// ✅ Fetch only once if not already loaded
 	React.useEffect(() => {
@@ -44,17 +58,33 @@ const Reviews = ({
 		e.preventDefault();
 		setSubmitting(true);
 		try {
+			const reviewData = {
+				...form,
+				product_id: id,
+				// Ensure we use authenticated user's info if available
+				reviewer: isAuthenticated && user ? user.displayName : form.reviewer,
+				reviewer_email:
+					isAuthenticated && user ? user.email : form.reviewer_email,
+			};
+
 			const res = await fetch(`/api/products/reviews`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ ...form, product_id: id }),
+				body: JSON.stringify(reviewData),
 			});
 
 			if (!res.ok) throw new Error("Failed to submit review");
 
 			const { review } = await res.json();
 			setReviews((prev) => [review, ...prev]);
-			setForm({ reviewer: "", reviewer_email: "", review: "", rating: 5 });
+
+			// Only reset review text and rating, keep user info if authenticated
+			if (isAuthenticated && user) {
+				setForm((prev) => ({ ...prev, review: "", rating: 5 }));
+			} else {
+				setForm({ reviewer: "", reviewer_email: "", review: "", rating: 5 });
+			}
+
 			toast.success("Review submitted successfully!");
 		} catch (error) {
 			console.error("Error submitting review:", error);
@@ -165,43 +195,48 @@ const Reviews = ({
 								<span>Maximum</span> {form.review.length}/250
 							</div>
 						</div>
+						{!isAuthenticated && (
+							<div className="flex flex-col md:flex-row gap-4">
+								{/* 👤 Name */}
+								<div className="w-full md:w-1/2">
+									<label className="block text-gray-800 mb-1">
+										Name<span className="text-red-500">*</span>
+									</label>
+									<input
+										type="text"
+										className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:ring-gray-700  placeholder:text-gray-500"
+										value={form.reviewer}
+										onChange={(e) =>
+											setForm({ ...form, reviewer: e.target.value })
+										}
+										required
+										placeholder="Name"
+									/>
+								</div>
 
-						<div className="flex flex-col md:flex-row gap-4">
-							{/* 👤 Name */}
-							<div className="w-full md:w-1/2">
-								<label className="block text-gray-800 mb-1">
-									Name<span className="text-red-500">*</span>
-								</label>
-								<input
-									type="text"
-									className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:ring-gray-700  placeholder:text-gray-500"
-									value={form.reviewer}
-									onChange={(e) =>
-										setForm({ ...form, reviewer: e.target.value })
-									}
-									required
-									placeholder="Name"
-								/>
+								{/* 📧 Email */}
+								<div className="w-full md:w-1/2">
+									<label className="block text-gray-800 mb-1">
+										Email<span className="text-red-500">*</span>
+									</label>
+									<input
+										type="email"
+										className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:ring-gray-700  placeholder:text-gray-500"
+										value={form.reviewer_email}
+										onChange={(e) =>
+											setForm({ ...form, reviewer_email: e.target.value })
+										}
+										required
+										placeholder="Email"
+									/>
+								</div>
 							</div>
-
-							{/* 📧 Email */}
-							<div className="w-full md:w-1/2">
-								<label className="block text-gray-800 mb-1">
-									Email<span className="text-red-500">*</span>
-								</label>
-								<input
-									type="email"
-									className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:ring-gray-700  placeholder:text-gray-500"
-									value={form.reviewer_email}
-									onChange={(e) =>
-										setForm({ ...form, reviewer_email: e.target.value })
-									}
-									required
-									placeholder="Email"
-								/>
+						)}
+						{isAuthenticated && (
+							<div className="bg-blue-50 border border-blue-200 rounded p-3 text-sm text-blue-800">
+								Posting as <strong>{user?.displayName}</strong> ({user?.email})
 							</div>
-						</div>
-
+						)}{" "}
 						{/* 🚀 Submit */}
 						<button
 							type="submit"
