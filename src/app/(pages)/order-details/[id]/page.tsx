@@ -114,19 +114,6 @@ export default function OrderDetailsPage() {
 								</p>
 							</div>
 						</div>
-						{order.needs_payment && (
-							<div className="mt-4">
-								<Button asChild>
-									<a
-										href={order.payment_url}
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										Pay Now
-									</a>
-								</Button>
-							</div>
-						)}
 					</CardContent>
 				</Card>
 

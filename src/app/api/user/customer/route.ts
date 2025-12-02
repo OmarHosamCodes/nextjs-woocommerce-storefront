@@ -6,15 +6,34 @@ export async function GET(request: NextRequest) {
 	try {
 		const searchParams = request.nextUrl.searchParams;
 		const customerId = searchParams.get("id");
+		const email = searchParams.get("email");
 
-		if (!customerId) {
+		if (!customerId && !email) {
 			return NextResponse.json(
-				{ error: "Customer ID is required" },
+				{ error: "Customer ID or email is required" },
 				{ status: 400 },
 			);
 		}
 
-		const { data } = await wcApi.get(`customers/${customerId}`);
+		let data;
+		if (email) {
+			// Search for customer by email
+			const { data: customers } = await wcApi.get("customers", {
+				email: email,
+				per_page: 1,
+			});
+			if (customers && customers.length > 0) {
+				data = customers[0];
+			} else {
+				return NextResponse.json(
+					{ error: "Customer not found" },
+					{ status: 404 },
+				);
+			}
+		} else {
+			const response = await wcApi.get(`customers/${customerId}`);
+			data = response.data;
+		}
 
 		return NextResponse.json(data);
 	} catch (error) {

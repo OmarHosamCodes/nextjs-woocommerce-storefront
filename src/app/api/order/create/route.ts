@@ -63,8 +63,29 @@ export async function POST(req: NextRequest) {
 		};
 
 		// Link order to customer if authenticated
-		if (customer_id) {
-			orderData.customer_id = customer_id;
+		// Try to find customer by email first, then use provided customer_id
+		if (customer_id || email) {
+			try {
+				// Search for existing customer by email
+				const { data: customers } = await wcApi.get("customers", {
+					email: email,
+					per_page: 1,
+				});
+
+				if (customers && customers.length > 0) {
+					// Use the WooCommerce customer ID
+					orderData.customer_id = customers[0].id;
+				} else if (customer_id) {
+					// Fallback to provided customer_id (WordPress user ID might match)
+					orderData.customer_id = customer_id;
+				}
+			} catch (error) {
+				console.error("Error fetching customer:", error);
+				// If lookup fails, still try with the provided customer_id
+				if (customer_id) {
+					orderData.customer_id = customer_id;
+				}
+			}
 		}
 
 		const { data } = await wcApi.post("orders", orderData);

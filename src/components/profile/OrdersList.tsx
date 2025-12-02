@@ -110,17 +110,6 @@ export function OrdersList({ orders, isLoading }: OrdersListProps) {
 													View Details
 												</Link>
 											</Button>
-											{order.needs_payment && (
-												<Button asChild size="sm">
-													<a
-														href={order.payment_url}
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														Pay Now
-													</a>
-												</Button>
-											)}
 										</div>
 									</div>
 

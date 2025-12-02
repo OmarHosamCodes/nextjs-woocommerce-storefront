@@ -22,13 +22,15 @@ export default function ProfilePage() {
 	// Fetch customer data from WooCommerce
 	const { data: customer, isLoading: isLoadingCustomer } =
 		useQuery<WooCustomer>({
-			queryKey: ["customer", user?.id],
+			queryKey: ["customer", user?.email],
 			queryFn: async () => {
-				const res = await fetch(`/api/user/customer?id=${user?.id}`);
+				const res = await fetch(
+					`/api/user/customer?email=${encodeURIComponent(user?.email || "")}`,
+				);
 				if (!res.ok) throw new Error("Failed to fetch customer data");
 				return res.json();
 			},
-			enabled: !!user?.id,
+			enabled: !!user?.email,
 		});
 
 	// Fetch orders
@@ -37,13 +39,15 @@ export default function ProfilePage() {
 		total: string;
 		totalPages: string;
 	}>({
-		queryKey: ["orders", user?.id],
+		queryKey: ["orders", user?.email],
 		queryFn: async () => {
-			const res = await fetch(`/api/user/orders?customer_id=${user?.id}`);
+			const res = await fetch(
+				`/api/user/orders?email=${encodeURIComponent(user?.email || "")}`,
+			);
 			if (!res.ok) throw new Error("Failed to fetch orders");
 			return res.json();
 		},
-		enabled: !!user?.id,
+		enabled: !!user?.email,
 	});
 
 	// Fetch reviews
@@ -66,7 +70,8 @@ export default function ProfilePage() {
 	// Update customer mutation
 	const updateCustomerMutation = useMutation({
 		mutationFn: async (data: Partial<WooCustomer>) => {
-			const res = await fetch(`/api/user/customer?id=${user?.id}`, {
+			if (!customer?.id) throw new Error("Customer ID not found");
+			const res = await fetch(`/api/user/customer?id=${customer.id}`, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(data),
@@ -75,7 +80,7 @@ export default function ProfilePage() {
 			return res.json();
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["customer", user?.id] });
+			queryClient.invalidateQueries({ queryKey: ["customer", user?.email] });
 			toast.success("Profile updated successfully");
 			setIsEditing(false);
 		},
