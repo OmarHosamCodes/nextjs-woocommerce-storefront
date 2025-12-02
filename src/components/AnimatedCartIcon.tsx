@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, useAnimation } from "framer-motion";
-import { ShoppingCart } from "lucide-react";
-import { useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
+import { ShoppingCart } from "lucide-react";
+import { motion, useAnimation } from "motion/react";
+import { useEffect } from "react";
 
 const AnimatedCartIcon = () => {
 	const { items } = useCartStore();

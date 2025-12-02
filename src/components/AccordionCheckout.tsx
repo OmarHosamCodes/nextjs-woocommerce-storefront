@@ -1,11 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import {
 	Accordion,
 	AccordionContent,
@@ -30,6 +24,12 @@ import { siteConfig } from "@/lib/config";
 import { type CheckoutFormData, checkoutSchema } from "@/lib/schemas";
 import { useAuthStore } from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "motion/react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 

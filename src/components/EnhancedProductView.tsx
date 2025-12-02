@@ -1,13 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { CheckCircle, Heart, ShoppingCart, Star, XCircle } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { siteConfig } from "@/lib/config";
+import { CheckCircle, Heart, ShoppingCart, Star, XCircle } from "lucide-react";
+import { motion } from "motion/react";
+import Image from "next/image";
+import { useState } from "react";
 
 // Types
 interface WooImage {

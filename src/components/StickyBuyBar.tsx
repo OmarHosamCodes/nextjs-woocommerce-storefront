@@ -1,10 +1,10 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ShoppingCart } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/config";
+import { ShoppingCart } from "lucide-react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useEffect, useState } from "react";
 
 interface StickyBuyBarProps {
 	productName: string;

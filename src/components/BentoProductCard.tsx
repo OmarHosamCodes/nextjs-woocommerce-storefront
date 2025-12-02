@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 
 interface Product {
 	id: number;

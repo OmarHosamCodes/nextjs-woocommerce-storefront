@@ -1,11 +1,11 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { navItems, siteConfig } from "@/lib/config";
 import { ChevronDown } from "lucide-react";
+import { motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { navItems, siteConfig } from "@/lib/config";
 import CartSlider from "./CartSlider";
 import SearchDialog from "./SearchDialog";
 import UserMenu from "./UserMenu";

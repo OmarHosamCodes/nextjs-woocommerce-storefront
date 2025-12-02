@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useCartStore } from "@/store/cartStore";
 import { Home, Search, ShoppingCart, User } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCartStore } from "@/store/cartStore";
 
 const MobileBottomNav = () => {
 	const pathname = usePathname();

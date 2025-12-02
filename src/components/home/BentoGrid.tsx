@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import BentoProductCard from "@/components/BentoProductCard";
+import { motion } from "motion/react";
 
 interface Product {
 	id: number;

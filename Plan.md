@@ -11,7 +11,7 @@ Styling: Tailwind CSS.
 
 UI Library: shadcn/ui (Radix UI primitives). Maximize usage of these components to replace custom implementations.
 
-Animations: framer-motion for smooth, simple micro-interactions and page transitions.
+Animations: motion for smooth, simple micro-interactions and page transitions.
 
 Icons: lucide-react.
 
