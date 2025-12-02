@@ -1,4 +1,4 @@
-import type { WooProduct } from "@/types/woo";
+import type { WooProduct, WooProductCategory } from "@/types/woo";
 import { wcApi } from "./woocommerce";
 
 export async function getNewArrivals(count: number): Promise<WooProduct[]> {
@@ -26,6 +26,16 @@ export async function getTopSellings(count: number): Promise<WooProduct[]> {
 		.then((res) => res.data as WooProduct[])
 		.catch((err) => {
 			console.error("Error fetching top sellings:", err);
+			return [];
+		});
+}
+
+export async function getCategories(): Promise<WooProductCategory[]> {
+	return await wcApi
+		.get("products/categories", { exclude: [15] })
+		.then((res) => res.data as WooProductCategory[])
+		.catch((err) => {
+			console.error("Error fetching categories:", err);
 			return [];
 		});
 }
